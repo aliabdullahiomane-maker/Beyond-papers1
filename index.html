@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f1f4f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101614" media="(prefers-color-scheme: dark)">
+<title>Beyond Paper</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231f5c4d'/%3E%3Cpath d='M9 6h10l5 5v15H9z' fill='none' stroke='%23f6f3ec' stroke-width='2'/%3E%3Cpath d='M12 18l3 3 6-7' fill='none' stroke='%23f6f3ec' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+/* ==========================================================
+   Beyond Paper: stylesheet
+   1. Tokens  2. Base  3. Layout  4. Components  5. Form
+   6. Results  7. Responsive  8. Accessibility  9. Print
+   ========================================================== */
+
+/* 1. Tokens */
+:root{
+  --bg:#f1f4f2;--surface:#ffffff;--tint:#e3eee8;--ink:#17201d;--muted:#4f5b56;--line:#d0d9d4;
+  --accent:#1b5a4a;--accent-hover:#144538;--on-accent:#ffffff;--warn:#8f4210;
+  --shadow:0 1px 2px rgba(23,32,29,.08),0 4px 14px rgba(23,32,29,.05);
+  --radius:4px;--gap:1.25rem;
+  --serif:var(--sans);
+  --sans:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  box-sizing:border-box;color-scheme:light;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#101614;--surface:#18201d;--tint:#1c2b26;--ink:#eae6dc;--muted:#a8b2ac;--line:#2d3935;
+    --accent:#7fcbb2;--accent-hover:#9ad8c3;--on-accent:#0d1a16;--warn:#e3a574;
+    --shadow:0 1px 2px rgba(0,0,0,.4);color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101614;--surface:#18201d;--tint:#1c2b26;--ink:#eae6dc;--muted:#a8b2ac;--line:#2d3935;
+  --accent:#7fcbb2;--accent-hover:#9ad8c3;--on-accent:#0d1a16;--warn:#e3a574;
+  --shadow:0 1px 2px rgba(0,0,0,.4);color-scheme:dark;
+}
+
+/* 2. Base */
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:1.0625rem;line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--serif);font-weight:700;line-height:1.2;margin:0 0 .6em;color:var(--ink)}
+h1{font-size:clamp(2.1rem,1.2rem + 3.6vw,3.4rem);letter-spacing:-.01em;max-width:17em;text-wrap:balance}
+h2{font-size:clamp(1.5rem,1.2rem + 1vw,2rem)}
+h3{font-size:1.2rem}
+p{margin:0 0 1em;text-wrap:pretty}
+a{color:var(--accent);text-underline-offset:.15em}
+img{max-width:100%;height:auto}
+
+/* 3. Layout */
+.wrap{width:100%;max-width:72rem;margin:0 auto;padding-left:max(1.25rem,env(safe-area-inset-left));padding-right:max(1.25rem,env(safe-area-inset-right))}
+.top{background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-wrap:wrap;gap:.5rem 2rem;align-items:center;justify-content:space-between;padding-top:1rem;padding-bottom:1rem}
+.brand{display:flex;align-items:center;gap:.7rem;font-family:var(--serif);font-weight:700;font-size:1.25rem;color:var(--ink);text-decoration:none}
+.brand::before{content:"";width:1.25rem;height:1.25rem;background:var(--accent);box-shadow:inset 0 0 0 .3rem var(--accent),inset 0 0 0 .45rem var(--surface);flex:none}
+nav{display:flex;gap:.25rem;flex-wrap:wrap}
+nav a{color:var(--muted);text-decoration:none;font-weight:500;padding:.5rem .8rem;border-bottom:3px solid transparent}
+nav a:hover{color:var(--ink);border-bottom-color:var(--line)}
+nav a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(1.5rem,4vw,4rem);align-items:center;padding:clamp(2.5rem,6vw,5rem) 0 clamp(2rem,4vw,3.5rem)}
+.lede{font-size:1.2rem;color:var(--muted);max-width:36em;margin-bottom:1.75rem}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gap);padding:0 0 clamp(2rem,4vw,3.5rem);margin:0;list-style:none}
+.steps li{border-top:4px solid var(--ink);padding-top:.9rem;color:var(--muted)}
+.steps b{display:block;color:var(--ink);font-family:var(--serif);font-size:1.15rem;margin-bottom:.25rem}
+.view[hidden]{display:none}
+.doc{max-width:48rem;padding-top:clamp(2rem,5vw,3.5rem);padding-bottom:4rem;line-height:1.75}
+.doc h1{margin-bottom:.3em}
+.doc h2{margin-top:1.8em;font-size:1.35rem}
+footer{background:#10382d;color:#dce8e2;font-size:.92rem;padding:2rem 0 1.25rem;margin-top:3rem}
+footer a{color:#fff}
+.foot{display:flex;gap:2rem;justify-content:space-between;flex-wrap:wrap}
+.foot p{max-width:38rem;margin:.4rem 0 0}
+.flinks{display:flex;gap:1.5rem}
+.copy{border-top:1px solid rgba(255,255,255,.22);margin-top:1.5rem;padding-top:1rem}
+
+/* 4. Components */
+.btn{font:inherit;font-weight:600;line-height:1.2;min-height:3rem;padding:.75rem 1.6rem;background:var(--accent);color:var(--on-accent);border:2px solid var(--accent);border-radius:var(--radius);cursor:pointer;transition:background-color .15s,border-color .15s}
+.btn:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.alt{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.alt:hover{background:var(--tint)}
+.row{display:flex;gap:.75rem 1rem;flex-wrap:wrap;align-items:center;margin-top:1.25rem}
+.pair{display:grid;gap:1rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:1.25rem 1.4rem;box-shadow:var(--shadow)}
+.card p{margin:0 0 .35em}
+.card .tag{display:block;font-size:.76rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.5rem}
+.card.lost{background:transparent;border:2px dashed var(--muted);box-shadow:none;color:var(--muted)}
+.card.built{border-left:6px solid var(--accent)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(1.25rem,3vw,2.5rem);margin-bottom:clamp(2rem,4vw,3rem)}
+.panel h2{padding-bottom:.6rem;border-bottom:1px solid var(--line);margin:2rem 0 1rem}
+.panel>h2:first-child{margin-top:0}
+.hint{color:var(--muted);font-size:.93rem;margin:0 0 .9rem}
+.note{background:var(--tint);border-left:5px solid var(--warn);padding:.85rem 1.1rem;margin:1.25rem 0;color:var(--ink)}
+
+/* 5. Form */
+fieldset{border:0;padding:0;margin:2rem 0 0;min-width:0}
+legend{font-family:var(--serif);font-weight:700;font-size:1.3rem;padding:0;margin-bottom:.4rem}
+label{display:block;font-weight:600;font-size:.95rem;margin-bottom:.35rem}
+input[type=text],input[type=tel],input[type=number],select,textarea{width:100%;min-height:3rem;font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--muted);border-radius:var(--radius);padding:.65rem .8rem}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
+textarea{min-height:18rem;line-height:1.55;resize:vertical}
+input[type=checkbox]{width:1.35rem;height:1.35rem;accent-color:var(--accent);flex:none}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 1.25rem}
+.task{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:.5rem 1rem;align-items:center;padding:.8rem 0;border-top:1px solid var(--line)}
+.task label{margin:0;font-weight:500}
+.acc{border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);margin-bottom:.7rem;overflow:hidden}
+.acc summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:.9rem;min-height:3.4rem;padding:.8rem 1.1rem;font-weight:600}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary:hover{background:var(--tint)}
+.acc summary>span:first-child{flex:1 1 0;min-width:0}
+.acc summary::after{content:"";flex:none;width:.6rem;height:.6rem;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);margin:-.2rem .25rem 0 0}
+.acc[open]{border-color:var(--accent)}
+.acc[open] summary{background:var(--tint);border-bottom:1px solid var(--line)}
+.acc[open] summary::after{transform:rotate(-135deg);margin-top:.2rem}
+.acc .sub{margin-left:auto;font-weight:400;color:var(--muted);font-size:.9rem;text-align:right}
+.acc .sub.on{color:var(--accent);font-weight:600}
+.acc .inner{padding:1.25rem 1.1rem 1.4rem;background:var(--surface);animation:slide .22s ease-out}
+.miss{display:flex;gap:.7rem;align-items:flex-start;margin:0 0 1.1rem;font-weight:600}
+.miss input{margin-top:.2rem}
+.up{margin-top:1.4rem;padding-top:1.1rem;border-top:1px dashed var(--line)}
+.up input[type=file]{width:100%;font:inherit;padding:.5rem 0}
+.up input[type=file]::file-selector-button{font:inherit;font-weight:600;color:var(--ink);background:var(--surface);border:2px solid var(--ink);border-radius:var(--radius);padding:.5rem 1rem;margin-right:.9rem;cursor:pointer}
+.files{list-style:none;padding:0;margin:.6rem 0 0}
+.files li{display:flex;gap:1rem;justify-content:space-between;align-items:center;padding:.6rem 0;border-top:1px solid var(--line);font-size:.93rem;overflow-wrap:anywhere}
+.rm{font:inherit;background:none;border:0;color:var(--accent);text-decoration:underline;cursor:pointer;padding:.4rem 0;flex:none;min-height:2.5rem}
+@keyframes slide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+/* 6. Results */
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);margin:.9rem 0 1.5rem}
+table{width:100%;min-width:34rem;border-collapse:collapse}
+th,td{text-align:left;padding:.75rem .9rem;border-bottom:1px solid var(--line);vertical-align:middle}
+thead th{background:var(--tint);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+tbody tr:last-child td{border-bottom:0}
+.seg{display:inline-block;width:1.4rem;height:.7rem;background:var(--line);margin-right:.25rem}
+.seg.on{background:var(--accent)}
+.plan{list-style:none;margin:0 0 2rem;padding:0;counter-reset:step}
+.plan li{counter-increment:step;position:relative;padding:0 0 1.6rem 3.5rem;margin:0}
+.plan li::before{content:counter(step);position:absolute;left:0;top:.1rem;width:2.4rem;height:2.4rem;display:grid;place-items:center;font-weight:700;background:var(--surface);color:var(--ink);border:2px solid var(--ink);border-radius:var(--radius)}
+.plan li::after{content:"";position:absolute;left:1.2rem;top:2.7rem;bottom:.3rem;width:2px;background:var(--line)}
+.plan li:last-child::after{display:none}
+.plan li.start::before{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.plan .k{display:block;font-size:.76rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.2rem}
+.plan li.start .k{color:var(--accent);font-weight:700}
+.plan h3{margin-bottom:.3em}
+.plan p{margin:0;color:var(--muted)}
+.evi{display:block;max-width:100%;max-height:24rem;margin:.8rem 0 .2rem;border:1px solid var(--line);border-radius:var(--radius)}
+
+.mods{padding:1.4rem 1.5rem}
+.modlist{list-style:none;margin:0;padding:0;counter-reset:m}
+.modlist li{counter-increment:m;display:flex;gap:.9rem;align-items:center;padding:.7rem 0;border-top:1px solid var(--line);font-weight:600}
+.modlist li:first-child{border-top:0}
+.modlist li::before{content:counter(m);flex:none;width:1.9rem;height:1.9rem;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);border-radius:var(--radius);font-size:.9rem}
+.avatar{float:right;width:7.5rem;height:7.5rem;object-fit:cover;border:1px solid var(--line);border-radius:var(--radius);margin:0 0 1rem 1.25rem}
+.scroll{clear:both}
+.kv{margin:0 0 .8rem;white-space:pre-wrap}
+.kv strong{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.kv-q{font-weight:600;margin-bottom:1rem}
+.casebox{border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.2rem .6rem;margin:0 0 1rem}
+ul.plain{margin:0 0 1.2rem;padding-left:1.3rem}
+ul.plain li{margin-bottom:.4rem}
+input[type=file]{width:100%;font:inherit;padding:.5rem 0}
+input[type=file]::file-selector-button{font:inherit;font-weight:600;color:var(--ink);background:var(--surface);border:2px solid var(--ink);border-radius:var(--radius);padding:.5rem 1rem;margin-right:.9rem;cursor:pointer}
+.stack>div{margin-bottom:1rem}
+
+.portfolio>h2:first-child{margin-top:0}
+.nextsteps{margin-top:3rem;padding-top:1.5rem;border-top:4px solid var(--ink)}
+.nextsteps>h2:first-child{margin-top:0}
+.sign{display:flex;gap:2rem;margin:2rem 0 .8rem}
+.sign .line{flex:1;border-top:1px solid var(--ink);padding-top:.3rem;font-size:.85rem;color:var(--muted)}
+.sign .short{flex:0 0 30%}
+
+.util{background:#10382d;color:#e4efe9;font-size:.85rem}
+.util .wrap{padding-top:.45rem;padding-bottom:.45rem}
+.crumbs{display:flex;gap:.6rem;align-items:center;font-size:.9rem;color:var(--muted);padding:1.25rem 0 0}
+.intro{padding:1.5rem 0 2rem}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:0 0 1.75rem}
+.cols h3{margin-bottom:.5rem}
+.stephead{margin-bottom:1.5rem}
+.stepper{list-style:none;display:flex;gap:.5rem;margin:0 0 .8rem;padding:0}
+.stepper li{flex:1;border-top:5px solid var(--line);padding-top:.5rem;font-size:.9rem;color:var(--muted)}
+.stepper li b{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+.stepper li.done,.stepper li.cur{border-top-color:var(--accent);color:var(--ink)}
+.stepper li.cur{font-weight:700}
+.stepcount{display:none;margin:0;font-weight:600}
+.step>h2{margin-top:0}
+.stepnav{display:flex;justify-content:space-between;gap:1rem;margin-top:2rem;padding-top:1.25rem;border-top:1px solid var(--line)}
+.stepnav .btn:only-child{margin-left:auto}
+.err{background:var(--tint);border-left:5px solid var(--warn);padding:.8rem 1rem;margin:0 0 1.25rem;font-weight:600}
+
+.sigpad{margin:1rem 0 .6rem;max-width:34rem}
+.sigpad canvas{display:block;width:100%;aspect-ratio:10/3;border:1.5px dashed var(--muted);border-radius:var(--radius);background:#fff;touch-action:none;cursor:crosshair}
+.sigrow{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:.3rem;font-size:.85rem;color:var(--muted)}
+.datefield{display:flex;align-items:center;gap:.7rem;margin:.4rem 0 1rem;max-width:34rem}
+.datefield label{margin:0}
+.datefield input{max-width:14rem}
+
+/* 7. Responsive */
+@media (max-width:56rem){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .steps{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:40rem){
+  body{font-size:1rem}
+  .top .wrap{flex-direction:column;align-items:flex-start}
+  nav{margin-left:-.8rem}
+  .grid2,.task{grid-template-columns:minmax(0,1fr)}
+  .row .btn,#go{width:100%}
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .stepper li:not(.cur) span{display:none}
+  .stepper li.cur span{display:block}
+  .stepnav{flex-direction:column-reverse}
+  .stepnav .btn{width:100%}
+  .stepnav .btn:only-child{margin-left:0}
+  .acc summary{flex-wrap:wrap}
+  .acc summary>span:first-child{flex:1 1 70%}
+  .acc .sub{order:3;width:100%;margin-left:0;text-align:left;font-size:.88rem}
+  .plan li{padding-left:3rem}
+}
+/* Large screens and televisions: scale the whole interface */
+@media (min-width:100rem){html{font-size:112.5%}}
+@media (min-width:120rem){html{font-size:125%}}
+@media (min-width:160rem){html{font-size:156%}}
+@media (min-width:200rem){html{font-size:187.5%}}
+@media (pointer:coarse){.btn,input[type=text],input[type=tel],input[type=number],select{min-height:3.25rem}}
+
+/* 8. Accessibility */
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:4px solid var(--warn);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media (forced-colors:active){.btn,.card,.acc,.panel{border:2px solid CanvasText}.seg.on{background:Highlight}}
+
+/* 9. Print */
+@media print{
+  .util,.crumbs,.intro,.top,footer,.hero,.steps,#build,.noprint{display:none!important}
+  body{background:#fff;color:#000;font-size:11pt}
+  .panel{border:0;box-shadow:none;padding:0;margin:0}
+  .panel>h2{border-color:#999}
+  .scroll{overflow:visible;border-color:#999}
+  table{min-width:0}
+  thead th{background:#eee;color:#000}
+  h2,h3{break-after:avoid;color:#000}
+  tr,img,.plan li{break-inside:avoid}
+  .plan li::before{border-color:#000;background:#fff;color:#000}
+  .plan li.start::before{background:#000;color:#fff}
+  .seg{border:1px solid #000;background:#fff}.seg.on{background:#000}
+  .note{background:#f2f2f2;color:#000}
+  textarea{border:0;min-height:0;padding:0;resize:none}
+  body[data-print="portfolio"] .nextsteps{display:none!important}
+  body[data-print="steps"] .portfolio{display:none!important}
+  .nextsteps{border-top-color:#000}
+  .sign .line{border-top-color:#000;color:#000}
+  .casebox{border-color:#999}
+  .sigpad canvas{border:1px solid #000}
+  .datefield input{border:0;border-bottom:1px solid #000;border-radius:0;padding:.2rem 0;min-height:0;background:transparent;color:#000}
+}
+</style>
+</head>
+<body>
+<div class="util"><div class="wrap">Beyond Paper: a skills portfolio for people who lost their documents. An independent project, not a government website.</div></div>
+<header class="top"><div class="wrap">
+<a class="brand" href="#home">Beyond Paper</a>
+<nav aria-label="Main"><a href="#home" id="n-home">Build a portfolio</a><a href="#privacy" id="n-privacy">Privacy</a><a href="#terms" id="n-terms">Terms</a></nav>
+</div></header>
+
+<main>
+<div class="view" id="view-home">
+<div class="wrap">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="#home">Home</a><span aria-hidden="true">/</span><span>Build a portfolio</span></nav>
+<section class="intro">
+<h1>Lost your certificates? Build proof of your skills without them.</h1>
+<p class="lede">Answer questions about the work you have actually done. You get a printable portfolio with your skills, case studies and the people who can confirm your work, plus a plan for recovering your documents. What you type is not sent anywhere.</p>
+<div class="cols">
+<div class="card"><h3>What you will need</h3><ul class="plain"><li>Your work history: where you worked and for how long</li><li>The name and phone number of a supervisor and a colleague</li><li>Photos of your work or documents, if you have any</li></ul></div>
+<div class="card"><h3>What you will get</h3><ul class="plain"><li>A portfolio built only from what you wrote</li><li>A declaration and space for your referees to sign</li><li>Steps for recovering your missing documents</li></ul></div>
+</div>
+<button class="btn" type="button" id="go">Start your portfolio</button>
+</section>
+
+<section class="panel" id="build">
+<h2>Build your portfolio</h2>
+<div id="f" role="group" aria-label="Portfolio form">
+<div class="stephead"><ol class="stepper" id="stepper"></ol><p class="stepcount" id="stepcount"></p></div>
+<p class="err" id="formerr" role="alert" hidden></p>
+<section class="step" id="s1">
+<h2>Your details</h2>
+<div class="grid2">
+<div><label for="pname">Your full name</label><input type="text" id="pname" required></div>
+<div><label for="profession">Profession</label><select id="profession"></select></div>
+<div id="otherwrap" hidden><label for="otherprof">Your profession</label><input type="text" id="otherprof"></div>
+<div><label for="years">Years of experience</label><input type="number" id="years" min="0" max="60" required></div>
+<div><label for="workplace">Last workplace</label><input type="text" id="workplace" placeholder="Hospital, school, company or site" required></div>
+<div><label for="country">Country where you worked</label><input type="text" id="country" required></div>
+<div><label for="photo">Your photo (optional)</label><input type="file" id="photo" accept="image/*"><p class="hint" id="photohint">A clear photo helps people recognise you. It does not replace an ID.</p></div>
+</div>
+</section>
+<section class="step" id="s2" hidden>
+<h2>Your skills</h2>
+<fieldset>
+<legend>What have you done in practice?</legend>
+<p class="hint">Be accurate. Only claim what a former colleague could confirm.</p>
+<div id="tasks"></div>
+</fieldset>
+<fieldset>
+<legend>Practical verification</legend>
+<p class="hint">Answer real scenarios from your profession in your own words. They show how you think and work, and an assessor can follow them up in an interview or test. Skip any you prefer not to answer.</p>
+<div id="verify"></div>
+</fieldset>
+</section>
+<section class="step" id="s3" hidden>
+<h2>Your work</h2>
+<fieldset>
+<legend>Case studies</legend>
+<p class="hint">Describe up to six pieces of real work: the problem, what you did and the result. Add photos of the work if you have them.</p>
+<div id="cases"></div>
+<div class="row"><button class="btn alt" type="button" id="addcase">Add a case study</button></div>
+</fieldset>
+</section>
+<section class="step" id="s4" hidden>
+<h2>People and documents</h2>
+<fieldset>
+<legend>People who can confirm your work</legend>
+<p class="hint">Open a person to add their details. Skip anyone you do not have. Ask their permission before you share their details.</p>
+<div id="refs"></div>
+</fieldset>
+<fieldset>
+<legend>Your documents</legend>
+<p class="hint">Open a document to add its details and attach a photo or copy. Tick the box if you no longer have the original. Skip documents you do not need to mention.</p>
+<div id="docs"></div>
+</fieldset>
+<fieldset>
+<legend>What happened to your documents?</legend>
+<p class="hint">In your own words, say how you lost them. This is optional. It appears in your portfolio so that an authority understands your situation.</p>
+<textarea id="story" style="min-height:110px" maxlength="900"></textarea>
+</fieldset>
+</section>
+<section class="step" id="s5" hidden>
+<h2>Review and build</h2>
+<p>Check your answers and confirm that they are true. You can go back and change anything before you build your portfolio.</p>
+<label class="miss" style="margin-top:2rem"><input type="checkbox" id="decl" required><span>I confirm that everything I entered is true and was written by me.</span></label>
+</section>
+</div>
+</section>
+
+<section class="panel" id="out" hidden></section>
+</div>
+</div>
+
+<div class="view" id="view-privacy" hidden><div class="wrap doc">
+<h1>Privacy policy</h1>
+<p>Effective November 24, 2026.</p>
+<h2>What this site does with your information</h2>
+<p>Everything you type into the portfolio form, and any photos or files you attach, is processed in your browser. Attached files are read on your device only. They are not uploaded or saved, and they disappear when you close or refresh the page, so print or save your portfolio as a PDF before you leave. The site does not send it to a server, store it in a database, or share it with anyone. When you close or refresh the page, it is gone.</p>
+<h2>What we do not use</h2>
+<p>This site does not use cookies, advertising trackers or analytics. It does not ask you to create an account.</p>
+<h2>What the hosting provider may record</h2>
+<p>Like any website, the company that hosts it may keep standard technical logs, such as your IP address and the time of your visit. This is outside the control of the site and is covered by the host’s own policy.</p>
+<h2>Printing and copying</h2>
+<p>If you print the portfolio, save it as a PDF or copy the letter, that copy is stored wherever you put it. Keep it somewhere safe, because it may include your name, workplace and country, and the names and phone numbers of the people you list as referees. Ask those people for permission before you share their details.</p>
+<h2>Children</h2>
+<p>This site is intended for adults seeking recognition of their professional skills.</p>
+<h2>Changes</h2>
+<p>If this policy changes, the effective date above will change with it.</p>
+</div></div>
+
+<div class="view" id="view-terms" hidden><div class="wrap doc">
+<h1>Terms and conditions</h1>
+<p>Effective November 24, 2026.</p>
+<h2>What this tool is</h2>
+<p>Beyond Paper helps you organize a description of your professional experience and a list of ways to recover evidence of it. It is a self-assessment tool. It does not verify your qualifications.</p>
+<h2>Not legal or official advice</h2>
+<p>The portfolio and plan are general guidance. They are not legal advice, and they are not an official credential assessment. Rules for recognizing qualifications differ by country, profession and authority. Always confirm requirements with the authority that will assess you before paying any fee.</p>
+<h2>No guarantee</h2>
+<p>Using this tool does not guarantee that any authority, employer or institution will recognize your skills or qualifications.</p>
+<h2>Your responsibility</h2>
+<p>You are responsible for the accuracy of what you enter. Only present experience you have genuinely had. Submitting false claims to an authority or employer can have serious consequences.</p>
+<h2>Availability</h2>
+<p>The site is provided as it is. It may change or be unavailable at times.</p>
+<h2>Changes</h2>
+<p>If these terms change, the effective date above will change with them.</p>
+</div></div>
+</main>
+
+<footer>
+<div class="wrap foot"><div><strong>Beyond Paper</strong><p>A free tool that helps skilled people who lost their documents show what they can do. Built for the Power Learn Project Africa Mini Hackathon. It gives general guidance, not legal advice, and is not affiliated with any government or agency.</p></div>
+<div class="flinks"><a href="#privacy">Privacy policy</a><a href="#terms">Terms and conditions</a></div></div>
+<div class="wrap copy">© 2026 Ali Abdullah. All rights reserved.</div>
+</footer>
+
+<script>
+var P={
+nurse:{g:"Health",label:"Nurse or midwife",noun:"nurse or midwife",tasks:["Administering medication and monitoring patients","Wound care and infection control","Triage and emergency response","Maternal and child health care","Patient records and shift handover","Supervising or training junior staff"]},
+doctor:{g:"Health",label:"Medical doctor or clinical officer",noun:"medical doctor or clinical officer",tasks:["Taking patient histories and examining patients","Diagnosing and planning treatment","Prescribing and reviewing medication","Managing emergencies and referring patients","Keeping accurate clinical records","Supervising or teaching junior staff"]},
+pharmacist:{g:"Health",label:"Pharmacist",noun:"pharmacist",tasks:["Checking prescriptions for accuracy and safety","Dispensing and labelling medicines","Counselling patients on how to use medicines","Managing stock, storage and expiry dates","Spotting unsafe doses or interactions","Keeping dispensing and controlled medicine records"]},
+lab:{g:"Health",label:"Laboratory technologist",noun:"laboratory technologist",tasks:["Collecting and labelling samples correctly","Running tests with standard procedures","Calibrating and maintaining equipment","Recording and reporting results accurately","Following biosafety and waste disposal rules","Running quality control checks"]},
+teacher:{g:"Education",label:"Teacher",noun:"teacher",tasks:["Planning lessons and schemes of work","Teaching a full class independently","Assessing and marking learner progress","Classroom management and learner welfare","Adapting teaching for different levels","Mentoring other teachers"]},
+engineer:{g:"Engineering and trades",label:"Civil engineer",noun:"civil engineer",tasks:["Reading and producing technical drawings","Site supervision and quality control","Surveying and setting out","Estimating quantities and costs","Structural or materials calculations","Managing contractors and site safety"]},
+eleceng:{g:"Engineering and trades",label:"Electrical engineer",noun:"electrical engineer",tasks:["Designing or reviewing electrical layouts","Reading single-line and wiring diagrams","Testing and commissioning equipment","Fault finding and repair","Applying electrical safety procedures","Supervising installers or technicians"]},
+mecheng:{g:"Engineering and trades",label:"Mechanical engineer",noun:"mechanical engineer",tasks:["Reading mechanical drawings and specifications","Maintaining and repairing machinery","Planning preventive maintenance","Diagnosing faults in pumps, engines or systems","Measuring tolerances and checking quality","Supervising technicians and workshop safety"]},
+electrician:{g:"Engineering and trades",label:"Electrician",noun:"electrician",tasks:["Installing wiring, sockets and lighting","Reading wiring diagrams and plans","Testing circuits and finding faults","Fitting earthing and protection devices","Following electrical isolation and safety procedures","Inspecting completed work and recording results"]},
+mechanic:{g:"Engineering and trades",label:"Automotive mechanic",noun:"automotive mechanic",tasks:["Diagnosing engine and electrical faults","Servicing vehicles on schedule","Repairing brakes and suspension","Fitting and replacing parts correctly","Using diagnostic and measuring tools","Road testing and quality checks"]},
+software:{g:"Technology",label:"Software developer",noun:"software developer",tasks:["Writing and testing code","Finding and fixing bugs","Using version control","Designing databases or user interfaces","Working from requirements with a team","Deploying or maintaining software"]},
+accountant:{g:"Business and law",label:"Accountant",noun:"accountant",tasks:["Bookkeeping and ledgers","Preparing financial statements","Payroll and tax filing","Budgeting and forecasting","Audit support and reconciliations","Using accounting software"]},
+lawyer:{g:"Business and law",label:"Lawyer or paralegal",noun:"lawyer or paralegal",tasks:["Advising clients on their legal position","Researching laws and past cases","Drafting contracts and legal documents","Preparing cases and evidence","Representing clients or assisting in court","Keeping client files and confidentiality"]},
+pm:{g:"Business and law",label:"Project manager",noun:"project manager",tasks:["Planning scope, schedule and budget","Assigning and following up tasks","Managing risks and problems","Reporting to managers or donors","Working with suppliers or partners","Closing projects and recording lessons"]},
+social:{g:"Community and land",label:"Social worker",noun:"social worker",tasks:["Assessing the needs of individuals and families","Creating and following support plans","Protecting vulnerable people","Referring people to other services","Keeping confidential case records","Working with communities and partners"]},
+agri:{g:"Community and land",label:"Agricultural officer or agronomist",noun:"agricultural officer or agronomist",tasks:["Advising farmers on crops and soil","Planning planting and harvest seasons","Recognising and managing pests and diseases","Training farmers in good practice","Managing irrigation or water use","Keeping farm and field records"]},
+vet:{g:"Community and land",label:"Veterinary officer",noun:"veterinary officer",tasks:["Examining and treating sick animals","Vaccination and disease prevention","Advising owners on animal care","Inspecting meat and animal products","Reporting and controlling disease outbreaks","Keeping treatment and herd records"]},
+journalist:{g:"Media and language",label:"Journalist",noun:"journalist",tasks:["Researching and verifying stories","Interviewing sources","Writing and editing news or features","Taking or sourcing photos and audio","Checking facts and sources","Following ethics and legal limits"]},
+translator:{g:"Media and language",label:"Translator or interpreter",noun:"translator or interpreter",tasks:["Translating written documents accurately","Interpreting in meetings or interviews","Using subject terms correctly","Proofreading and checking translations","Keeping client information confidential","Working in more than one language pair"]},
+chef:{g:"Hospitality",label:"Chef or cook",noun:"chef or cook",tasks:["Preparing meals to a standard","Planning menus and portions","Managing food safety and hygiene","Ordering and storing ingredients","Controlling waste and costs","Supervising kitchen staff"]},
+other:{g:"Other",label:"Other (write your own)",noun:"",tasks:[]}
+};
+var LV=["Not done","Done occasionally","Done regularly","Done regularly and trained others"];
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e;}
+function lc(s){return s.charAt(0).toLowerCase()+s.slice(1);}
+function $(id){return document.getElementById(id);}
+
+var sel=$("profession");
+var GROUPS=["Health","Education","Engineering and trades","Technology","Business and law","Community and land","Media and language","Hospitality","Other"];
+GROUPS.forEach(function(g){var og=el("optgroup");og.label=g;Object.keys(P).forEach(function(k){if(P[k].g===g){var o=el("option","",P[k].label);o.value=k;og.appendChild(o);}});sel.appendChild(og);});
+var OTHER_N=5;
+function renderTasks(){
+  var box=$("tasks");box.textContent="";
+  if(sel.value==="other"){
+    for(var i=0;i<OTHER_N;i++){
+      var row=el("div","task"),ti=el("input"),s2=el("select");
+      ti.type="text";ti.id="tn"+i;ti.placeholder="A task you do or did";ti.setAttribute("aria-label","Task "+(i+1));
+      s2.id="t"+i;s2.setAttribute("aria-label","Experience for task "+(i+1));
+      LV.forEach(function(l,j){var o=el("option","",l);o.value=j;s2.appendChild(o);});
+      row.appendChild(ti);row.appendChild(s2);box.appendChild(row);
+    }
+    return;
+  }
+  P[sel.value].tasks.forEach(function(t,i){
+    var row=el("div","task"),lab=el("label","",t);lab.htmlFor="t"+i;
+    var s2=el("select");s2.id="t"+i;
+    LV.forEach(function(l,j){var o=el("option","",l);o.value=j;s2.appendChild(o);});
+    row.appendChild(lab);row.appendChild(s2);box.appendChild(row);
+  });
+}
+function getTasks(){
+  var list=[],n=sel.value==="other"?OTHER_N:P[sel.value].tasks.length;
+  for(var i=0;i<n;i++){
+    var name=sel.value==="other"?$("tn"+i).value.trim():P[sel.value].tasks[i];
+    if(name)list.push({t:name,l:parseInt($("t"+i).value,10)});
+  }
+  return list;
+}
+sel.addEventListener("change",function(){renderTasks();renderVerify();$("otherwrap").hidden=sel.value!=="other";$("otherprof").required=sel.value==="other";});renderTasks();
+
+var REFS=["Supervisor","Colleague"];
+var RF=[["n","Full name","text"],["p","Position","text"],["t","Phone number","tel"],["o","Company or organization","text"]];
+var DL=[["id","ID or refugee registration document","Agency or office that issued it"],["degree","Degree, diploma or certificate","University or college"],["transcript","Academic transcript or results","University, college or school"],["license","Professional registration or license","Professional council or association"],["work","Employment letter, contract or payslips","Employer"]];
+function acc(title){
+  var d=el("details","acc"),sm=el("summary"),sub=el("span","sub","Tap to add details"),inner=el("div","inner");
+  sm.appendChild(el("span","",title));sm.appendChild(sub);d.appendChild(sm);d.appendChild(inner);
+  return {d:d,sub:sub,inner:inner};
+}
+function field(id,label,type){var w=el("div"),l=el("label","",label),i=el("input");l.htmlFor=id;i.type=type;i.id=id;w.appendChild(l);w.appendChild(i);return w;}
+var rb=$("refs");
+REFS.forEach(function(title,i){
+  var a=acc(title),g=el("div","grid2");
+  RF.forEach(function(f){g.appendChild(field("r"+i+f[0],f[1],f[2]));});
+  a.inner.appendChild(g);rb.appendChild(a.d);
+  a.inner.addEventListener("input",function(){var n=$("r"+i+"n").value.trim();a.sub.textContent=n?"Added: "+n:"Tap to add details";a.sub.className=n?"sub on":"sub";});
+});
+var FILES={},MAXF=3,MAXB=4*1024*1024;
+var db=$("docs");
+DL.forEach(function(x){
+  var key=x[0];FILES[key]=[];
+  var a=acc(x[1]),m=el("label","miss"),cb=el("input"),g=el("div","grid2");
+  cb.type="checkbox";cb.id="d-"+key;m.appendChild(cb);m.appendChild(document.createTextNode("I do not have the original now"));
+  g.appendChild(field("d-"+key+"-i",x[2],"text"));g.appendChild(field("d-"+key+"-y","Year issued, if you remember","text"));
+  var up=el("div","up"),ul=el("label","","Attach a photo, scan or copy (optional)"),fi=el("input"),
+      note=el("p","hint","Images or PDF, up to 3 files, 4 MB each. Files stay on this device and are not uploaded."),
+      msg=el("p","hint",""),list=el("ul","files");
+  ul.htmlFor="d-"+key+"-f";fi.type="file";fi.id="d-"+key+"-f";fi.accept="image/*,.pdf,application/pdf";fi.multiple=true;
+  msg.setAttribute("role","status");
+  up.appendChild(ul);up.appendChild(fi);up.appendChild(note);up.appendChild(msg);up.appendChild(list);
+  a.inner.appendChild(m);a.inner.appendChild(g);a.inner.appendChild(up);db.appendChild(a.d);
+  var upd=function(){
+    var parts=[];if(cb.checked)parts.push("Marked as missing");
+    if(FILES[key].length)parts.push(FILES[key].length+(FILES[key].length===1?" file":" files"));
+    a.sub.textContent=parts.length?parts.join(", "):"Tap to add details";a.sub.className=parts.length?"sub on":"sub";
+  };
+  var draw=function(){
+    list.textContent="";
+    FILES[key].forEach(function(f,idx){
+      var li=el("li"),nm=el("span","",f.name+" ("+Math.max(1,Math.round(f.size/1024))+" KB)"),rm=el("button","rm","Remove");
+      rm.type="button";rm.addEventListener("click",function(){FILES[key].splice(idx,1);draw();upd();});
+      li.appendChild(nm);li.appendChild(rm);list.appendChild(li);
+    });
+  };
+  fi.addEventListener("change",function(){
+    msg.textContent="";
+    Array.prototype.slice.call(fi.files).forEach(function(f){
+      var isImg=/^image\//.test(f.type),okType=isImg||f.type==="application/pdf"||/\.pdf$/i.test(f.name);
+      if(!okType){msg.textContent="Only images and PDF files can be attached.";return;}
+      if(f.size>MAXB){msg.textContent=f.name+" is larger than 4 MB and was not added.";return;}
+      if(FILES[key].length>=MAXF){msg.textContent="You can attach up to 3 files here.";return;}
+      var entry={name:f.name,size:f.size,image:isImg,data:""};FILES[key].push(entry);
+      if(isImg){var rd=new FileReader();rd.onload=function(){entry.data=rd.result;};rd.readAsDataURL(f);}
+    });
+    fi.value="";draw();upd();
+  });
+  cb.addEventListener("change",upd);
+  cb.addEventListener("click",function(){cb.dataset.touched="1";});
+  a.d.addEventListener("toggle",function(){if(a.d.open&&!cb.dataset.touched&&!cb.checked){cb.checked=true;upd();}});
+});
+
+var VER={
+nurse:[["A patient you are caring for becomes noticeably worse during your shift. Describe what you check, who you inform and what you record.",["checking vital signs and the patient’s condition","informing the nurse in charge or a doctor promptly","following the local emergency or escalation procedure","recording times, observations and actions"]],["You are about to give a medicine and something does not match the prescription. What do you do?",["stopping before giving the medicine","checking the prescription, the patient and the dose again","asking the prescriber or a senior colleague","documenting what happened and following the incident reporting process"]]],
+doctor:[["A patient arrives with symptoms that could be serious but the cause is unclear. Describe how you assess them and decide the next step.",["taking a clear history and examining the patient","considering serious causes first and choosing suitable tests","deciding on treatment, observation or referral","explaining the plan to the patient and recording it"]],["You realise a colleague made an error in a patient’s treatment plan. What do you do?",["acting first to keep the patient safe","raising it respectfully with the colleague or a senior","following the reporting procedure","recording the facts and learning from it"]]],
+pharmacist:[["A prescription has a dose that looks unusually high. What do you do?",["not dispensing until it is checked","verifying against reference sources","contacting the prescriber to confirm","recording the query and the outcome"]],["Stock of an important medicine is running low and a delivery is delayed. How do you manage it?",["checking stock levels and expected demand","prioritising patients with the greatest need","contacting suppliers or nearby facilities","informing prescribers and recording decisions"]]],
+lab:[["A sample arrives without a clear label. What do you do?",["not testing until the identity is confirmed","contacting the person who collected it","following the lab’s rejection or recollection procedure","recording the incident"]],["Quality control results are outside the acceptable range before a test run. What do you do?",["stopping patient testing","checking reagents, equipment and calibration","repeating the controls after corrective action","documenting it and informing a supervisor"]]],
+teacher:[["Your class has learners at very different levels. Describe how you plan and teach one lesson so that everyone learns.",["a clear lesson objective","activities for different levels","checking understanding during the lesson","adjusting the lesson based on what learners show"]],["A learner is often absent and falling behind. What steps do you take?",["talking to the learner and the family to understand the cause","a plan to help the learner catch up","involving school leaders or welfare staff where needed","tracking progress over time"]]],
+engineer:[["You find cracks in a recently cast concrete slab on site. What do you do?",["securing the area and stopping loading until it is assessed","recording the location and size of the cracks, with photos","checking the mix, curing and load records","informing the supervising engineer and agreeing a remedy"]],["The quantities used on a task are well above the estimate. How do you find out why?",["comparing drawings, measurements and the bill of quantities","checking for waste, errors or changes in scope","reviewing site records and deliveries","reporting findings and correcting the estimate or the process"]]],
+eleceng:[["A circuit keeps tripping its protection after a new installation. How do you find the cause?",["making the circuit safe first","checking wiring, load and connections against the design","testing step by step","recording the fault and the fix"]],["You are asked to work on equipment that may still be live. What do you do?",["refusing to work until it is isolated","following lock-out and tag-out or the site permit procedure","testing that it is dead before touching it","informing the supervisor of the risk"]]],
+mecheng:[["A key machine breaks down in the middle of production. Describe your approach.",["making it safe and stopping it properly","gathering information on symptoms and recent changes","diagnosing in a logical order","repairing, testing and recording the cause"]],["Maintenance costs for a machine keep rising. How do you decide whether to repair or replace it?",["reviewing repair history and downtime","comparing repair cost with replacement cost","considering safety and reliability","reporting a clear recommendation"]]],
+electrician:[["A customer says the power keeps cutting out in one room. How do you find the problem?",["making the circuit safe and asking when it happens","checking connections, protection devices and load","testing before repairing","explaining the fault and recording the work"]],["You find old wiring with damaged insulation during a job. What do you do?",["making the area safe and isolating the circuit","not covering up or ignoring the hazard","explaining the risk to the owner","recommending or carrying out a proper repair"]]],
+mechanic:[["A customer’s vehicle has a brake problem. How do you handle the repair and the road test?",["making the vehicle safe and inspecting it thoroughly","fixing the cause rather than the symptom","testing before returning it","explaining the work and recording it"]],["A vehicle returns with the same fault you repaired last week. What do you do?",["taking it seriously and rechecking the original repair","looking for a different or related cause","being honest with the customer","correcting the work and recording the lesson"]]],
+software:[["A feature works on your computer but fails for users. How do you investigate?",["reproducing the problem","checking logs and differences between environments","isolating the cause step by step","fixing, testing and recording the lesson"]],["You are asked to deliver a feature faster than is realistic. What do you do?",["clarifying the priorities and the core need","explaining the risks and trade-offs","agreeing a smaller scope or a new date","communicating early rather than late"]]],
+accountant:[["At month end the bank balance does not match the ledger. Describe the steps you take.",["listing unmatched items on both sides","looking for timing differences, duplicates and transposed numbers","making supported adjustments","documenting the reconciliation and having it reviewed"]],["A supplier invoice looks like a duplicate. What do you do before paying?",["comparing invoice number, date, amount and supplier","checking the payment history and the purchase order","holding payment until it is confirmed","recording the outcome and informing the supplier or manager"]]],
+lawyer:[["A client asks you to help with something that may be unlawful. What do you do?",["not assisting with unlawful acts","explaining the law and the risks","staying within professional ethics","recording the advice given"]],["You are given a contract to review quickly before a deadline. How do you approach it?",["reading all key terms, not only a summary","identifying obligations, risks and unclear wording","raising questions or suggested changes","explaining the findings in plain language"]]],
+pm:[["A project is falling behind schedule. What do you do?",["finding out the real cause","re-planning with the team","communicating honestly with stakeholders","agreeing and tracking corrective actions"]],["The budget for a project is nearly used up before the work is finished. How do you respond?",["reviewing spending against the plan","identifying what must be finished first","discussing options with the funder or manager","documenting any approved change"]]],
+social:[["You visit a family and become worried about a child’s safety. What do you do?",["putting the child’s safety first","following the organisation’s child protection procedure","recording facts rather than opinions","informing the right supervisor or authority"]],["A client asks you to keep information secret that may put someone at risk. How do you respond?",["explaining the limits of confidentiality honestly","acting to prevent serious harm","consulting a supervisor","recording what was done and why"]]],
+agri:[["Farmers report that a crop is wilting and its leaves are spotted. How do you investigate?",["visiting and observing the fields","checking for pests, disease, water and soil problems","getting expert or laboratory help where needed","advising on practical steps and following up"]],["Farmers in an area want to switch to a new crop. How do you advise them?",["checking soil, climate and water suitability","considering markets and costs","suggesting a small trial first","providing training and follow-up"]]],
+vet:[["Several animals in a herd suddenly become sick. What do you do?",["examining the animals and gathering the history","isolating affected animals and limiting movement","taking samples and reporting as required","advising the owner on treatment and prevention"]],["An owner cannot afford the full treatment you recommend. How do you respond?",["explaining the options honestly","putting animal welfare first","finding a safe and affordable plan","recording the decision"]]],
+journalist:[["A source gives you a shocking claim you cannot easily confirm. What do you do?",["verifying with more than one source","checking documents or other evidence","giving the person named a chance to respond","not publishing until it is checked"]],["After publication you discover an error in your story. What do you do?",["checking the facts quickly","correcting it openly","informing the editor","reviewing how the error happened"]]],
+translator:[["You do not know a technical term while interpreting. What do you do?",["not guessing on important content","asking politely for clarification","using reference sources when possible","staying neutral and accurate"]],["A client asks you to leave out part of what was said. How do you respond?",["explaining the duty to translate faithfully","staying impartial","involving a supervisor if needed","keeping the exchange professional and confidential"]]],
+chef:[["A delivery of fresh food arrives and part of it looks or smells wrong. What do you do?",["inspecting and refusing unsafe items","checking storage temperature and dates","recording it and informing the supplier","adjusting the menu if needed"]],["A guest tells you they have a food allergy. How do you handle their order?",["taking it seriously and asking specific questions","preventing cross-contact during preparation","telling the whole kitchen and serving staff","double-checking the dish before it is served"]]]
+};
+var ANS={},CASES=[],CASE_MAX=6,PHOTO="",uSeq=0,caseSeq=0;
+function area(id,label,h){var w=el("div"),l=el("label","",label),t=el("textarea");l.htmlFor=id;t.id=id;t.style.minHeight=h||"6rem";w.appendChild(l);w.appendChild(t);return w;}
+function printPart(part){document.body.setAttribute("data-print",part);window.print();}
+window.addEventListener("afterprint",function(){document.body.removeAttribute("data-print");});
+function kv(label,text){var p=el("p","kv");p.appendChild(el("strong","",label));p.appendChild(document.createTextNode(text));return p;}
+function renderVerify(){
+  var box=$("verify");box.textContent="";
+  if(!VER[sel.value])box.appendChild(el("p","hint","There are no standard scenarios for this profession. Use the case studies below to show your work."));
+  (VER[sel.value]||[]).forEach(function(v,i){
+    var key=sel.value+i,a=acc("Scenario "+(i+1)),l=el("label","","Your answer, step by step"),ta=el("textarea");
+    l.htmlFor="v"+i;ta.id="v"+i;ta.style.minHeight="9rem";ta.value=ANS[key]||"";
+    var upd=function(){var on=!!ta.value.trim();a.sub.textContent=on?"Answered":"Tap to add details";a.sub.className=on?"sub on":"sub";};
+    ta.addEventListener("input",function(){ANS[key]=ta.value;upd();});upd();
+    a.inner.appendChild(el("p","kv-q",v[0]));a.inner.appendChild(l);a.inner.appendChild(ta);
+    a.inner.appendChild(el("p","hint","A strong answer usually covers: "+v[1].join("; ")+"."));
+    box.appendChild(a.d);
+  });
+}
+function attachImages(store,onChange){
+  var up=el("div","up"),ul=el("label","","Add photos of the work (optional)"),fi=el("input"),
+      note=el("p","hint","Images only, up to 3 files, 4 MB each. Files stay on this device and are not uploaded."),
+      msg=el("p","hint",""),list=el("ul","files");
+  fi.type="file";fi.accept="image/*";fi.multiple=true;fi.id="u"+(++uSeq);ul.htmlFor=fi.id;msg.setAttribute("role","status");
+  var draw=function(){
+    list.textContent="";
+    store.forEach(function(f,idx){
+      var li=el("li"),rm=el("button","rm","Remove");rm.type="button";
+      rm.addEventListener("click",function(){store.splice(idx,1);draw();onChange();});
+      li.appendChild(el("span","",f.name));li.appendChild(rm);list.appendChild(li);
+    });
+  };
+  fi.addEventListener("change",function(){
+    msg.textContent="";
+    Array.prototype.slice.call(fi.files).forEach(function(f){
+      if(!/^image\//.test(f.type)){msg.textContent="Only images can be attached here.";return;}
+      if(f.size>MAXB){msg.textContent=f.name+" is larger than 4 MB and was not added.";return;}
+      if(store.length>=MAXF){msg.textContent="You can attach up to 3 photos here.";return;}
+      var entry={name:f.name,size:f.size,image:true,data:""};store.push(entry);
+      var rd=new FileReader();rd.onload=function(){entry.data=rd.result;};rd.readAsDataURL(f);
+    });
+    fi.value="";draw();onChange();
+  });
+  up.appendChild(ul);up.appendChild(fi);up.appendChild(note);up.appendChild(msg);up.appendChild(list);
+  return up;
+}
+function addCase(){
+  if(CASES.length>=CASE_MAX)return;
+  var id=++caseSeq,a=acc("Case study"),files=[],stack=el("div","stack");
+  var wt=field("c"+id+"t","Title of the work","text"),wp=area("c"+id+"p","The problem or situation"),wa=area("c"+id+"a","What you did"),
+      wr=area("c"+id+"r","The result"),ws=field("c"+id+"s","Skills and tools used","text"),wl=field("c"+id+"l","Reference or link (optional)","text");
+  [wt,wp,wa,wr,ws,wl].forEach(function(w){stack.appendChild(w);});
+  a.inner.appendChild(stack);
+  var c={d:a.d,t:wt.querySelector("input"),p:wp.querySelector("textarea"),a:wa.querySelector("textarea"),r:wr.querySelector("textarea"),s:ws.querySelector("input"),l:wl.querySelector("input"),files:files};
+  var upd=function(){var t=c.t.value.trim();a.sub.textContent=t||"Tap to add details";a.sub.className=t?"sub on":"sub";};
+  c.t.addEventListener("input",upd);
+  a.inner.appendChild(attachImages(files,function(){}));
+  var rm=el("button","rm","Remove this case study");rm.type="button";
+  rm.addEventListener("click",function(){CASES.splice(CASES.indexOf(c),1);a.d.remove();$("addcase").hidden=CASES.length>=CASE_MAX;});
+  a.inner.appendChild(rm);
+  CASES.push(c);$("cases").appendChild(a.d);a.d.open=true;
+  $("addcase").hidden=CASES.length>=CASE_MAX;c.t.focus();
+}
+$("addcase").addEventListener("click",addCase);
+$("photo").addEventListener("change",function(){
+  var f=this.files[0],h=$("photohint");PHOTO="";
+  if(!f)return;
+  if(!/^image\//.test(f.type)){h.textContent="Please choose an image file.";this.value="";return;}
+  if(f.size>MAXB){h.textContent="That photo is larger than 4 MB. Choose a smaller one.";this.value="";return;}
+  var rd=new FileReader();rd.onload=function(){PHOTO=rd.result;h.textContent="Photo added. It will appear in your portfolio.";};rd.readAsDataURL(f);
+});
+renderVerify();
+
+$("go").addEventListener("click",function(){$("build").scrollIntoView({behavior:"smooth"});$("pname").focus({preventScroll:true});});
+
+function buildPortfolio(){
+  var p=P[sel.value],name=$("pname").value.trim(),yrs=parseInt($("years").value,10)||0,
+      wp=$("workplace").value.trim(),country=$("country").value.trim();
+  var noun=sel.value==="other"?($("otherprof").value.trim().toLowerCase()||"professional"):p.noun;var rated=getTasks().filter(function(r){return r.l>=1;});var occ=rated.filter(function(r){return r.l===1;}).map(function(r){return lc(r.t);});
+  var reg=rated.filter(function(r){return r.l===2;}).map(function(r){return lc(r.t);});
+  var trained=rated.filter(function(r){return r.l===3;}).map(function(r){return lc(r.t);});
+  
+  var lost={id:$("d-id").checked,degree:$("d-degree").checked,transcript:$("d-transcript").checked,license:$("d-license").checked,work:$("d-work").checked};var story=$("story").value.trim();var docInfo={};DL.forEach(function(x){docInfo[x[0]]={i:$("d-"+x[0]+"-i").value.trim(),y:$("d-"+x[0]+"-y").value.trim()};});
+
+  var cases=CASES.map(function(c){return {t:c.t.value.trim(),p:c.p.value.trim(),a:c.a.value.trim(),r:c.r.value.trim(),s:c.s.value.trim(),l:c.l.value.trim(),files:c.files};}).filter(function(c){return c.t||c.p||c.a||c.r||c.s||c.l||c.files.length;});
+  var vans=(VER[sel.value]||[]).map(function(v,i){return {i:i,q:v[0],look:v[1],a:(ANS[sel.value+i]||"").trim()};}).filter(function(x){return x.a;});
+  var refs=REFS.map(function(t,i){return {role:t,n:$("r"+i+"n").value.trim(),p:$("r"+i+"p").value.trim(),t:$("r"+i+"t").value.trim(),o:$("r"+i+"o").value.trim()};}).filter(function(r){return r.n||r.p||r.t||r.o;});
+  var summary=name+" is a "+noun+" with "+yrs+" year"+(yrs===1?"":"s")+" of experience. Most recent workplace: "+wp+", "+country+".";
+  if(reg.length)summary+=" Regular hands-on practice in: "+reg.join("; ")+".";
+  if(trained.length)summary+=" Has also trained or supervised others in: "+trained.join("; ")+".";
+  if(occ.length)summary+=" Some experience in: "+occ.join("; ")+".";
+  
+
+  var out=$("out");out.textContent="";out.hidden=false;
+  var port=el("div","portfolio"),nxt=el("div","nextsteps"),cur=port;
+  var eb=el("div","row noprint"),ebtn=el("button","btn alt","Edit my answers");ebtn.type="button";
+  ebtn.addEventListener("click",function(){out.hidden=true;$("build").hidden=false;showStep(0,true);});
+  eb.appendChild(ebtn);out.appendChild(eb);
+  cur.appendChild(el("h2","","Your competency portfolio"));
+  if(PHOTO){var av=el("img","avatar");av.src=PHOTO;av.alt="Photo of "+name;cur.appendChild(av);}
+  cur.appendChild(el("p","",summary));
+  var wrap=el("div","scroll"),tb=el("table"),hd=el("thead"),hr=el("tr");
+  ["Task","Experience","Level"].forEach(function(h){hr.appendChild(el("th","",h));});
+  hd.appendChild(hr);tb.appendChild(hd);
+  var body=el("tbody");
+  rated.forEach(function(r){
+    var tr=el("tr");tr.appendChild(el("td","",r.t));tr.appendChild(el("td","",LV[r.l]));
+    var td=el("td");for(var k=1;k<=3;k++){td.appendChild(el("span","seg"+(k<=r.l?" on":"")));}
+    tr.appendChild(td);body.appendChild(tr);
+  });
+  tb.appendChild(body);wrap.appendChild(tb);if(rated.length)cur.appendChild(wrap);
+  cur.appendChild(el("p","note","This portfolio is a self-assessment. It becomes evidence only when it is backed by letters, signed statements or an assessment by a recognized authority."));
+
+  if(vans.length){
+    cur.appendChild(el("h2","","Practical verification"));
+    cur.appendChild(el("p","hint","Written answers to scenarios from my profession. An assessor can use them as a starting point for an interview or a practical test."));
+    vans.forEach(function(x){var b=el("div","casebox");b.appendChild(el("h3","","Scenario "+(x.i+1)));b.appendChild(kv("Scenario",x.q));b.appendChild(kv("My answer",x.a));b.appendChild(kv("What a strong answer covers",x.look.join("; ")+"."));cur.appendChild(b);});
+  }
+  if(cases.length){
+    cur.appendChild(el("h2","","Case studies"));
+    cases.forEach(function(c,i){
+      var b=el("div","casebox");b.appendChild(el("h3","",c.t||("Case study "+(i+1))));
+      if(c.p)b.appendChild(kv("Problem or situation",c.p));
+      if(c.a)b.appendChild(kv("What I did",c.a));
+      if(c.r)b.appendChild(kv("Result",c.r));
+      if(c.s)b.appendChild(kv("Skills and tools used",c.s));
+      if(c.l)b.appendChild(kv("Reference or link",c.l));
+      c.files.forEach(function(f){if(f.data){var im=el("img","evi");im.src=f.data;im.alt=f.name;im.onerror=function(){im.replaceWith(el("p","hint","Could not display "+f.name));};b.appendChild(im);}});
+      cur.appendChild(b);
+    });
+  }
+  if(refs.length){
+    cur.appendChild(el("h2","","People who can confirm my work"));
+    var w2=el("div","scroll"),t2=el("table"),hd2=el("thead"),r2=el("tr");
+    ["Role","Name","Position","Phone","Company or organization"].forEach(function(h){r2.appendChild(el("th","",h));});
+    hd2.appendChild(r2);t2.appendChild(hd2);var b2=el("tbody");
+    refs.forEach(function(r){var tr=el("tr");[r.role,r.n||"Not provided",r.p||"Not provided",r.t||"Not provided",r.o||"Not provided"].forEach(function(x){tr.appendChild(el("td","",x));});b2.appendChild(tr);});
+    t2.appendChild(b2);w2.appendChild(t2);cur.appendChild(w2);
+  }
+  var missing=DL.filter(function(x){return lost[x[0]];});
+  if(missing.length){
+    cur.appendChild(el("h2","","Documents I need to recover"));
+    var w3=el("div","scroll"),t3=el("table"),hd3=el("thead"),r3=el("tr");
+    ["Document","Issued by","Year"].forEach(function(h){r3.appendChild(el("th","",h));});
+    hd3.appendChild(r3);t3.appendChild(hd3);var b3=el("tbody");
+    missing.forEach(function(x){var inf=docInfo[x[0]],tr=el("tr");[x[1],inf.i||"Not provided",inf.y||"Not provided"].forEach(function(v){tr.appendChild(el("td","",v));});b3.appendChild(tr);});
+    t3.appendChild(b3);w3.appendChild(t3);cur.appendChild(w3);
+  }
+  if(story){cur.appendChild(el("h2","","Statement about my missing documents"));var sp=el("p","",story);sp.style.whiteSpace="pre-wrap";cur.appendChild(sp);}
+var withFiles=DL.filter(function(x){return FILES[x[0]].length;});
+  if(withFiles.length){
+    cur.appendChild(el("h2","","Attached copies and evidence"));
+    withFiles.forEach(function(x){
+      cur.appendChild(el("h3","",x[1]));
+      FILES[x[0]].forEach(function(f){
+        if(f.image&&f.data){
+          var im=el("img","evi");im.src=f.data;im.alt=f.name;
+          im.onerror=function(){im.replaceWith(el("p","","Could not display "+f.name+". Bring the original file."));};
+          cur.appendChild(im);cur.appendChild(el("p","hint",f.name));
+        }else{cur.appendChild(el("p","","File: "+f.name+". Bring or send this file separately with your portfolio."));}
+      });
+    });
+  }
+  var DOCS=[
+    ["id","Replace your ID or refugee registration document","Contact the agency that registered you, such as the UN refugee agency (UNHCR) or the government office that handles refugee registration where you live. Ask how to get a replacement or a certified copy. Other evidence is linked to this document, so do this first."],
+    ["degree","Request a replacement degree, diploma or certificate","Write to the registrar or records office of your university or college. Give your full name, date of birth, course and the years you studied. Many institutions can email a certified copy or a confirmation letter. If the institution has closed or you cannot reach it, ask the education ministry of your home country, or the recognition authority where you live, what they accept instead."],
+    ["transcript","Request your academic transcript or results","Ask the same registrar for a transcript. If you cannot get one, ask for a statement of studies that confirms your course, dates and completion, and ask a former lecturer for a signed statement."],
+    ["license","Ask the professional body about your registration","Contact the professional council or association that registered you in your home country. Ask for a letter confirming your registration and its dates. If the body cannot be reached, your employer letter and signed statements from registered colleagues can support your case."],
+    ["work","Ask for proof of your employment","Contact your former employer or supervisor for a signed letter confirming your job title, dates and duties. Use the draft letter below. If you cannot reach them, ask a colleague who worked with you for a signed statement that includes their position and phone number. Old payslips or bank statements saved on your phone or in your email can also show that you were employed."]
+  ];
+  var start=[],next=[];
+  DOCS.forEach(function(d){if(lost[d[0]]){var inf=docInfo[d[0]],extra=inf.i?" Who to contact: "+inf.i+(inf.y?" (issued "+inf.y+")":"")+".":"";start.push([d[1],d[2]+extra]);}});
+  if(!start.length)start.push(["No missing documents selected","Go back and tick the documents you cannot get at the moment. This plan will then show who to contact for each one."]);
+  next.push(["Collect any evidence you still have","Search old phones, email, cloud backups and chat apps for photos of certificates, payslips, work photos and badges. Keep everything in one folder and back it up in two places."]);
+  next.push(["Ask the recognition authority what it accepts","Contact the credential recognition body in the country where you live. Ask what it accepts from people who cannot produce documents. Rules differ by country and profession, so confirm before paying any fee."]);
+  next.push(["Ask whether a practical test or interview can replace missing paperwork","Some professions allow an assessment of your skills instead of documents."]);
+
+  var today=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+  cur.appendChild(el("h2","","Declaration"));
+  cur.appendChild(el("p","",name+" declares that the information in this portfolio is true and was written by them. Date: "+today+"."));
+  cur.appendChild(sigPad("Signature of "+name));
+  cur.appendChild(el("h2","","Confirmation by people who know the work"));
+  cur.appendChild(el("p","hint","Each person below can read this portfolio and sign if they agree it is accurate. They can sign on this screen with a finger or mouse, or you can print the page and sign on paper."));
+  (refs.length?refs:[{role:"Referee",n:"",p:"",t:"",o:""}]).forEach(function(r){
+    var b=el("div","casebox"),who=[r.n,r.p,r.o,r.t].filter(Boolean).join(", ");
+    b.appendChild(kv(r.role,who||"Name and position: ____________________"));
+    b.appendChild(el("p","","I confirm that I know this person’s work and that the information about their work in this portfolio is accurate to the best of my knowledge."));
+    b.appendChild(sigPad("Signature of "+(r.n||r.role)));b.appendChild(dateField(today));
+    cur.appendChild(b);
+  });
+  var pb=el("div","row noprint"),pdfb=el("button","btn","Save portfolio as PDF"),pbtn=el("button","btn alt","Print portfolio"),pst=el("span","hint","If Print does nothing in your browser, use Save as PDF.");pdfb.type="button";pbtn.type="button";pst.setAttribute("role","status");
+  pdfb.addEventListener("click",function(){savePdf(port,"Portfolio of "+name,"beyond-paper-portfolio.pdf",pst);});
+  pbtn.addEventListener("click",function(){printPart("portfolio");});pb.appendChild(pdfb);pb.appendChild(pbtn);pb.appendChild(pst);cur.appendChild(pb);
+  cur=nxt;
+  cur.appendChild(el("h2","","Next steps"));
+  cur.appendChild(el("p","","Your portfolio ends above. The guidance below helps you use it and recover your documents."));
+  cur.appendChild(el("h2","","Showing your skills without documents"));
+  cur.appendChild(el("p","","If you cannot get your ID or certificates, your skills can still be shown in layers. Authorities and employers usually combine several of them."));
+  var ul2=el("ul","plain");
+  ["Work samples and case studies: real examples of what you did, with photos where possible.","Practical verification: written answers to scenarios from your profession, which an assessor can follow up in an interview.","People who confirm your work: a supervisor and colleagues whom an authority can call.","A live skills test or interview: ask whether the authority offers one, because it shows your skills directly."].forEach(function(t){ul2.appendChild(el("li","",t));});
+  cur.appendChild(ul2);
+  cur.appendChild(el("p","note","This portfolio does not prove who you are. If you have no ID, ask the agency that registered you, or a recognised refugee or community organisation, how your identity can be confirmed. Identity and skills are usually checked separately."));
+  cur.appendChild(el("h2","","Your recovery plan"));
+  var ol=el("ol","plan");
+  start.forEach(function(x){var li=el("li","start");li.appendChild(el("span","k","Start here"));li.appendChild(el("h3","",x[0]));li.appendChild(el("p","",x[1]));ol.appendChild(li);});
+  next.forEach(function(x){var li=el("li");li.appendChild(el("span","k","Next"));li.appendChild(el("h3","",x[0]));li.appendChild(el("p","",x[1]));ol.appendChild(li);});
+  cur.appendChild(ol);
+
+  cur.appendChild(el("h2","","Draft letter requesting a reference"));
+  var sup=refs.filter(function(r){return r.role==="Supervisor";})[0];var greet=(sup&&sup.n)?"Dear "+sup.n+",":"Dear Sir or Madam,";var letter=greet+"\n\nI am writing to ask for a signed letter confirming my work as a "+noun+" at "+wp+" in "+country+". I lost my documents when I was forced to leave my home, and I am applying to have my skills recognised where I now live.\n\nPlease confirm, on headed paper if possible:\n- My full name: "+name+"\n- My job title\n- The dates I worked with you\n- The main duties I carried out\n\nPlease sign and date the letter, and include your position and contact details so that an authority can verify it.\n\nThank you for your help.\n\n"+name;
+  var ta=el("textarea");ta.id="letter";ta.value=letter;ta.setAttribute("aria-label","Draft letter");
+  cur.appendChild(ta);
+  var row=el("div","row noprint");
+  var cp=el("button","btn","Copy letter");cp.type="button";
+  var st=el("span","hint","");st.setAttribute("role","status");
+  cp.addEventListener("click",function(){
+    var done=function(ok){st.textContent=ok?"Copied.":"Could not copy. Select the text and copy it manually.";};
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(function(){done(true);},function(){ta.select();done(document.execCommand("copy"));});}
+      else{ta.select();done(document.execCommand("copy"));}
+    }catch(err){done(false);}
+  });
+  var pr=el("button","btn alt","Print next steps");pr.type="button";
+  var pdf2=el("button","btn alt","Save next steps as PDF");pdf2.type="button";pdf2.addEventListener("click",function(){savePdf(nxt,"Next steps for "+name,"beyond-paper-next-steps.pdf",st);});
+  pr.addEventListener("click",function(){printPart("steps");});
+  row.appendChild(cp);row.appendChild(pdf2);row.appendChild(pr);row.appendChild(st);cur.appendChild(row);
+  out.appendChild(port);out.appendChild(nxt);
+  out.scrollIntoView({behavior:"smooth"});
+}
+
+function sigPad(label){
+  var w=el("div","sigpad"),cv=el("canvas"),row=el("div","sigrow"),cap=el("span","sigcap",label),clr=el("button","rm noprint","Clear");
+  cv.width=1000;cv.height=300;cv.setAttribute("aria-label",label+": draw with a finger, mouse or pen");
+  var c=cv.getContext("2d"),drawing=false,last=null;
+  function blank(){c.fillStyle="#fff";c.fillRect(0,0,1000,300);cv.dataset.ink="0";}
+  blank();c.lineWidth=5;c.lineCap="round";c.lineJoin="round";c.strokeStyle="#111";
+  function pos(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height};}
+  cv.addEventListener("pointerdown",function(e){drawing=true;last=pos(e);try{cv.setPointerCapture(e.pointerId);}catch(err){}c.beginPath();c.arc(last.x,last.y,2.5,0,6.3);c.fillStyle="#111";c.fill();cv.dataset.ink="1";e.preventDefault();});
+  cv.addEventListener("pointermove",function(e){if(!drawing)return;var p=pos(e);c.beginPath();c.moveTo(last.x,last.y);c.lineTo(p.x,p.y);c.stroke();last=p;e.preventDefault();});
+  ["pointerup","pointercancel","pointerleave"].forEach(function(t){cv.addEventListener(t,function(){drawing=false;});});
+  clr.type="button";clr.addEventListener("click",blank);
+  row.appendChild(cap);row.appendChild(clr);w.appendChild(cv);w.appendChild(row);
+  return w;
+}
+function dateField(v){var w=el("div","datefield"),l=el("label","","Date"),i=el("input");i.type="text";i.id="dt"+(++uSeq);l.htmlFor=i.id;i.value=v;w.appendChild(l);w.appendChild(i);return w;}
+
+function pdfFromNode(root,title){
+  var PW=1190,PH=1684,M=100,CW=PW-2*M,LIM=PH-M-30,FONT='"Segoe UI",system-ui,Arial,Helvetica,sans-serif';
+  var pages=[],cv,cx,y=0;
+  function newPage(){
+    cv=document.createElement("canvas");cv.width=PW;cv.height=PH;cx=cv.getContext("2d");
+    cx.fillStyle="#fff";cx.fillRect(0,0,PW,PH);cx.textBaseline="alphabetic";
+    cx.fillStyle="#666";cx.font="18px "+FONT;cx.fillText("Beyond Paper",M,PH-55);
+    var pn="Page "+(pages.length+1);cx.fillText(pn,PW-M-cx.measureText(pn).width,PH-55);
+    pages.push(cv);y=M;
+  }
+  function ensure(h){if(y+h>LIM)newPage();}
+  function wrap(text,font,width){
+    cx.font=font;var out=[];
+    String(text).split("\n").forEach(function(par){
+      var words=par.split(" "),line="";
+      words.forEach(function(w){
+        while(cx.measureText(w).width>width){var k=w.length;while(k>1&&cx.measureText(w.slice(0,k)).width>width)k--;if(line){out.push(line);line="";}out.push(w.slice(0,k));w=w.slice(k);}
+        var t=line?line+" "+w:w;
+        if(line&&cx.measureText(t).width>width){out.push(line);line=w;}else line=t;
+      });
+      out.push(line);
+    });
+    return out;
+  }
+  function para(text,o){
+    o=o||{};var size=o.size||22,font=(o.bold?"bold ":"")+size+"px "+FONT,lh=Math.round(size*1.45),x=M+(o.indent||0);
+    wrap(text,font,CW-(o.indent||0)).forEach(function(l){ensure(lh);cx.font=font;cx.fillStyle=o.color||"#111";cx.fillText(l,x,y+size);y+=lh;});
+    y+=(o.after===undefined?12:o.after);
+  }
+  function rule(){ensure(16);cx.strokeStyle="#bbb";cx.lineWidth=2;cx.beginPath();cx.moveTo(M,y);cx.lineTo(M+CW,y);cx.stroke();y+=12;}
+  function noteBox(text){
+    var size=21,lh=31,lines=wrap(text,size+"px "+FONT,CW-50),h=lines.length*lh+28;
+    ensure(h+10);cx.fillStyle="#e3eee8";cx.fillRect(M,y,CW,h);cx.fillStyle="#8f4210";cx.fillRect(M,y,8,h);
+    cx.fillStyle="#111";cx.font=size+"px "+FONT;lines.forEach(function(l,i){cx.fillText(l,M+30,y+14+size+i*lh);});y+=h+16;
+  }
+  function cellText(c){return c.querySelector(".seg")?c.querySelectorAll(".seg.on").length+" of 3":c.textContent.trim();}
+  function table(t){
+    var rows=Array.prototype.map.call(t.querySelectorAll("tr"),function(tr){return Array.prototype.map.call(tr.children,cellText);});
+    var n=rows[0].length,cw=CW/n,pad=12,size=20,lh=28;
+    rows.forEach(function(r,ri){
+      var font=(ri===0?"bold ":"")+size+"px "+FONT,cells=r.map(function(c){return wrap(c||"",font,cw-2*pad);}),
+          h=Math.max.apply(null,cells.map(function(l){return l.length;}))*lh+2*pad;
+      ensure(h);
+      if(ri===0){cx.fillStyle="#e3eee8";cx.fillRect(M,y,CW,h);}
+      cx.strokeStyle="#bbb";cx.lineWidth=1;cx.beginPath();cx.moveTo(M,y+h);cx.lineTo(M+CW,y+h);cx.stroke();
+      cx.fillStyle="#111";cx.font=font;
+      cells.forEach(function(lines,ci){lines.forEach(function(l,li){cx.fillText(l,M+ci*cw+pad,y+pad+size+li*lh);});});
+      y+=h;
+    });
+    y+=20;
+  }
+  function img(im,maxH){
+    if(!im.complete||!im.naturalWidth)return;
+    var w=Math.min(CW,im.naturalWidth*2),h=im.naturalHeight*w/im.naturalWidth;
+    if(h>maxH){w=w*maxH/h;h=maxH;}
+    ensure(h+10);cx.drawImage(im,M,y,w,h);y+=h+14;
+  }
+  function sig(w2){
+    var c=w2.querySelector("canvas"),cap=w2.querySelector(".sigcap");
+    ensure(260);var h=170,w=h*c.width/c.height;
+    cx.drawImage(c,M,y,w,h);cx.strokeStyle="#111";cx.lineWidth=2;cx.beginPath();cx.moveTo(M,y+h+4);cx.lineTo(M+Math.max(w,520),y+h+4);cx.stroke();
+    y+=h+12;para(cap?cap.textContent:"Signature",{size:18,color:"#555",after:14});
+  }
+  function walk(node){
+    Array.prototype.forEach.call(node.children,function(c){
+      if(c.hidden||c.classList.contains("noprint"))return;
+      var tag=c.tagName;
+      if(tag==="H2"){ensure(260);para(c.textContent,{size:34,bold:true,after:6});rule();}
+      else if(tag==="H3"){ensure(160);para(c.textContent,{size:26,bold:true,after:6});}
+      else if(tag==="P"){
+        if(c.classList.contains("kv")){var st2=c.querySelector("strong"),lab=st2?st2.textContent:"";para(lab.toUpperCase(),{size:17,color:"#555",after:2});para(c.textContent.slice(lab.length),{after:10});}
+        else if(c.classList.contains("note"))noteBox(c.textContent);
+        else if(c.classList.contains("hint"))para(c.textContent,{size:19,color:"#555"});
+        else para(c.textContent);
+      }
+      else if(tag==="TABLE")table(c);
+      else if(tag==="UL"){Array.prototype.forEach.call(c.children,function(li){para("\u2022  "+li.textContent,{indent:20,after:6});});y+=6;}
+      else if(tag==="OL"){
+        Array.prototype.forEach.call(c.children,function(li,idx){
+          var k=li.querySelector(".k"),h=li.querySelector("h3"),p=li.querySelector("p");
+          if(k)para(k.textContent.toUpperCase(),{size:17,color:"#555",after:2});
+          ensure(130);if(h)para((idx+1)+". "+h.textContent,{size:25,bold:true,after:4});
+          if(p)para(p.textContent,{after:14});
+        });
+      }
+      else if(tag==="IMG")img(c,c.classList.contains("avatar")?220:640);
+      else if(tag==="TEXTAREA")para(c.value,{size:21});
+      else if(c.classList.contains("sigpad"))sig(c);
+      else if(c.classList.contains("datefield")){var di=c.querySelector("input");para("Date: "+(di?di.value:""),{after:18});}
+      else if(c.classList.contains("casebox")){y+=6;rule();walk(c);y+=8;}
+      else walk(c);
+    });
+  }
+  newPage();
+  para(title,{size:44,bold:true,after:4});rule();
+  walk(root);
+  return assemblePdf(pages,PW,PH);
+}
+function assemblePdf(pages,PW,PH){
+  var enc=new TextEncoder(),chunks=[],offsets=[],pos=0,N=pages.length,total=2+3*N;
+  function add(x){var b=typeof x==="string"?enc.encode(x):x;chunks.push(b);pos+=b.length;}
+  function obj(n,fn){offsets[n]=pos;add(n+" 0 obj\n");fn();add("\nendobj\n");}
+  function bytes(u){var b=atob(u.split(",")[1]),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+  add("%PDF-1.4\n");
+  obj(1,function(){add("<< /Type /Catalog /Pages 2 0 R >>");});
+  var kids=pages.map(function(_,i){return (3+3*i)+" 0 R";}).join(" ");
+  obj(2,function(){add("<< /Type /Pages /Kids ["+kids+"] /Count "+N+" >>");});
+  pages.forEach(function(cv,i){
+    var pg=3+3*i,ct=4+3*i,im=5+3*i,jpg=bytes(cv.toDataURL("image/jpeg",0.9)),s="q 595 0 0 842 0 0 cm /Im0 Do Q";
+    obj(pg,function(){add("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /XObject << /Im0 "+im+" 0 R >> >> /Contents "+ct+" 0 R >>");});
+    obj(ct,function(){add("<< /Length "+s.length+" >>\nstream\n"+s+"\nendstream");});
+    obj(im,function(){add("<< /Type /XObject /Subtype /Image /Width "+PW+" /Height "+PH+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpg.length+" >>\nstream\n");add(jpg);add("\nendstream");});
+  });
+  var xr=pos;add("xref\n0 "+(total+1)+"\n0000000000 65535 f \n");
+  for(var n=1;n<=total;n++)add(String(offsets[n]).padStart(10,"0")+" 00000 n \n");
+  add("trailer\n<< /Size "+(total+1)+" /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF");
+  return new Blob(chunks,{type:"application/pdf"});
+}
+function saveFile(blob,filename,status){
+  var fallback=function(){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();a.remove();status.textContent="The PDF was created. Check your downloads.";};
+  if(typeof claude!=="undefined"&&claude&&typeof claude.use==="function"){
+    claude.use("downloads").then(function(d){
+      if(!d){fallback();return;}
+      d.save({filename:filename,data:blob}).then(function(){status.textContent="Saved.";},function(err){status.textContent=(err&&err.code==="declined")?"Save cancelled.":"The PDF could not be saved here. Try the Print button, or open the page in a browser.";});
+    },function(){fallback();});
+  }else fallback();
+}
+function savePdf(node,title,filename,status){
+  var blob;
+  try{blob=pdfFromNode(node,title);}catch(err){status.textContent="Could not create the PDF. Use the Print button instead.";return;}
+  saveFile(blob,filename,status);
+}
+
+var STEPS=["Your details","Your skills","Your work","People and documents","Review and build"];
+function errMsg(text,focusId){var e=$("formerr");e.textContent=text;e.hidden=false;if(focusId&&$(focusId))$(focusId).focus();e.scrollIntoView({behavior:"smooth",block:"nearest"});}
+function showStep(n,scroll){
+  STEPS.forEach(function(_,i){$("s"+(i+1)).hidden=(i!==n);});
+  var st=$("stepper");st.textContent="";
+  STEPS.forEach(function(t,i){
+    var li=el("li",i<n?"done":(i===n?"cur":""));
+    li.appendChild(el("b","","Step "+(i+1)));li.appendChild(el("span","",t));
+    if(i===n)li.setAttribute("aria-current","step");
+    st.appendChild(li);
+  });
+  $("stepcount").textContent="Step "+(n+1)+" of "+STEPS.length+": "+STEPS[n];
+  $("formerr").hidden=true;
+  if(scroll)$("build").scrollIntoView({behavior:"smooth"});
+}
+function missingFields(){
+  var m=[];
+  if(!$("pname").value.trim())m.push(["pname","your name"]);
+  if(sel.value==="other"&&!$("otherprof").value.trim())m.push(["otherprof","your profession"]);
+  if(!$("years").value.trim())m.push(["years","years of experience"]);
+  if(!$("workplace").value.trim())m.push(["workplace","your last workplace"]);
+  if(!$("country").value.trim())m.push(["country","the country where you worked"]);
+  return m;
+}
+function listMissing(m){return "Please fill in: "+m.map(function(x){return x[1];}).join(", ")+".";}
+STEPS.forEach(function(_,i){
+  var nav=el("div","stepnav"),sec=$("s"+(i+1)),last=(i===STEPS.length-1);
+  if(i>0){var bk=el("button","btn alt","Back");bk.type="button";bk.addEventListener("click",function(){showStep(i-1,true);});nav.appendChild(bk);}
+  var nx=el("button","btn",last?"Build my portfolio":"Next");nx.type="button";
+  if(last)nx.id="buildbtn";
+  nx.addEventListener("click",function(){
+    if(i===0){var m=missingFields();if(m.length){errMsg(listMissing(m),m[0][0]);return;}}
+    if(last){
+      var m2=missingFields();
+      if(m2.length){showStep(0,true);errMsg(listMissing(m2),m2[0][0]);return;}
+      if(!$("decl").checked){errMsg("Please tick the box to confirm that everything you entered is true.","decl");return;}
+      $("build").hidden=true;buildPortfolio();return;
+    }
+    showStep(i+1,true);
+  });
+  nav.appendChild(nx);sec.appendChild(nav);
+});
+showStep(0,false);
+
+function route(){
+  var h=location.hash.slice(1);
+  var v=(h==="privacy"||h==="terms")?h:"home";
+  ["home","privacy","terms"].forEach(function(n){
+    $("view-"+n).hidden=(n!==v);
+    var a=$("n-"+n);if(n===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");
+  });
+  document.title=v==="privacy"?"Privacy policy | Beyond Paper":v==="terms"?"Terms and conditions | Beyond Paper":"Beyond Paper";
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);route();
+</script>
+</body>
+</html>
